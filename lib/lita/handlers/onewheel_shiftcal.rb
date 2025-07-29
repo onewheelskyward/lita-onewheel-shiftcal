@@ -18,9 +18,14 @@ module Lita
         # Lita.logger.debug res.body
         json_data = JSON.parse(res.body, symbolize_names: true)
         events = EventResponse.new(json_data)
-        events.events.each do |event|
+        events.events.each_with_index do |event, i|
           response.reply "#{event.title} #{event.date} #{event.time} #{event.shareable}"
+          if i == 3
+            response.reply "#{events.pagination.fullcount - 3} more results available at https://www.shift2bikes.org/events/search?q=#{term}"
+            break
+          end
         end
+
       end
 
       Lita.register_handler(self)
